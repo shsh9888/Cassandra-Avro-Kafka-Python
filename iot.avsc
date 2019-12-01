@@ -1,0 +1,1 @@
+{"namespace": "iot", "type": "record", "name": "iot", "fields": [{"name": "id", "type": "string"},{"name": "deviceId",  "type": ["string", "null"]},{"name": "data", "type": ["string", "null"]},{"name": "createdTimestamp", "type": ["int", "null"]}]}
