@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: final-simulator
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: final-simulator
+        component: final-simulator
+    spec:
+      containers:
+      - name: final-simulator
+        image: gcr.io/lab7-258103/final-simulator:1.0
+        args: ["15"]

@@ -3,43 +3,48 @@ import  sys
 import time
 import io
 import random
+from json import dumps
 import avro.schema
 from avro.io import DatumWriter
-from kafka import SimpleProducer
+from kafka import KafkaProducer
 from kafka import KafkaClient
 import uuid
 
 # To send messages synchronously
-KAFKA = KafkaClient('localhost:9092')
-PRODUCER = SimpleProducer(KAFKA)
+# KAFKA = KafkaClient('kafka:9092')
+PRODUCER = KafkaProducer(bootstrap_servers=['kafka:9092'],
+                         value_serializer=lambda x:dumps(x).encode('utf-8'))
 
 # Kafka topic
-TOPIC = "test"
+TOPIC = 'test'
 
 # Path to user.avsc avro schema
 SCHEMA_PATH = "iot.avsc"
 SCHEMA = avro.schema.Parse(open(SCHEMA_PATH).read())
 
 ##Default values
-buildingName = 'All' #send the devices from all the buildimng
+# buildingName = 'All' #send the devices from all the buildimng
 numberOfEvents = 10 ## number of events per device
 buildings =[]
 devices =[]
 
+print("Before number of events", numberOfEvents)
 
-if len(sys.argv) == 2:
-    buildingName = sys.argv[1] if  sys.argv[1]  else 'All'
-if len(sys.argv) == 3:
-    numberOfEvents = sys.argv[2]  if sys.argv[2] else 10
+if len(sys.argv) > 1:
+    numberOfEvents = sys.argv[1]  if sys.argv[1] else 10
 
-cluster = Cluster()
+numberOfEvents = int(numberOfEvents)
+print("printing the arguments", sys.argv[0],sys.argv[1])
+print("final number of events", numberOfEvents)
+
+cluster = Cluster(['cassandra'],port=9042)
 session = cluster.connect('iot')
 
-if buildingName == 'All':
-    buildings = session.execute("SELECT buildingId FROM buildinginfo")
-else:
-    query = "SELECT buildingId FROM buildinginfo where buildingname='{}' ALLOW FILTERING".format(buildingName)
-    buildings = session.execute(query)
+# if buildingName == 'All':
+buildings = session.execute("SELECT buildingId FROM buildinginfo")
+# else:
+#     query = "SELECT buildingId FROM buildinginfo where buildingname='{}' ALLOW FILTERING".format(buildingName)
+#     buildings = session.execute(query)
 
 for building in buildings:
     query = "SELECT * FROM deviceinfo where buildingId={} ALLOW FILTERING".format(building.buildingid)
@@ -48,7 +53,6 @@ for building in buildings:
     for item in devicesResults:
         devices.append(item)
 
-print(devices)
 categorical = ["on", "off", "disabled"]
 while True:
     for device in devices:
@@ -62,8 +66,7 @@ while True:
             encoder = avro.io.BinaryEncoder(bytes_writer)
             writer.write(deviceData, encoder)
             raw_bytes = bytes_writer.getvalue()
-            PRODUCER.send_messages(TOPIC, raw_bytes)
+            PRODUCER.send(TOPIC, value=deviceData)
 
-    time.sleep(1)
 
 
