@@ -28,13 +28,12 @@ numberOfEvents = 10 ## number of events per device
 buildings =[]
 devices =[]
 
-print("Before number of events", numberOfEvents)
 
 if len(sys.argv) > 1:
     numberOfEvents = sys.argv[1]  if sys.argv[1] else 10
 
 numberOfEvents = int(numberOfEvents)
-print("printing the arguments", sys.argv[0],sys.argv[1])
+
 print("final number of events", numberOfEvents)
 
 cluster = Cluster(['cassandra'],port=9042)
@@ -48,7 +47,6 @@ buildings = session.execute("SELECT buildingId FROM buildinginfo")
 
 for building in buildings:
     query = "SELECT * FROM deviceinfo where buildingId={} ALLOW FILTERING".format(building.buildingid)
-    print(query)
     devicesResults = session.execute(query)
     for item in devicesResults:
         devices.append(item)
@@ -57,7 +55,7 @@ categorical = ["on", "off", "disabled"]
 while True:
     for device in devices:
         for i in range(numberOfEvents):
-            data = random.choice(categorical) if device.devicetype == "Categorical" else random()
+            data = random.choice(categorical) if device.devicetype == "Categorical" else random.random()
             data = str(data)
             deviceData = {"id" : str(uuid.uuid1()), "deviceId": str(device.deviceid), "data":data, "createdTimestamp" : int(time.time())}
             print("sending device data",deviceData)

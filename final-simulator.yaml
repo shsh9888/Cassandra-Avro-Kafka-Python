@@ -12,5 +12,5 @@ spec:
     spec:
       containers:
       - name: final-simulator
-        image: gcr.io/lab7-258103/final-simulator:1.0
+        image: gcr.io/lab7-258103/final-simulator:2.0
         args: ["15"]
