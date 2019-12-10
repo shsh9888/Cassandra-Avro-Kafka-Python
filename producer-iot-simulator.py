@@ -55,7 +55,7 @@ categorical = ["on", "off", "disabled"]
 while True:
     for device in devices:
         for i in range(numberOfEvents):
-            data = random.choice(categorical) if device.devicetype == "Categorical" else random.random()
+            data = random.randrange(0,1000)
             data = str(data)
             deviceData = {"id" : str(uuid.uuid1()), "deviceId": str(device.deviceid), "data":data, "createdTimestamp" : int(time.time())}
             print("sending device data",deviceData)
