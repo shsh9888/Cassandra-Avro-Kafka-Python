@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:19.10
 MAINTAINER Shravan <shsh9888@colorado.edu>
 RUN mkdir -p /srv
 WORKDIR /srv
