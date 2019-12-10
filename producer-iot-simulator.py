@@ -59,11 +59,11 @@ while True:
             data = str(data)
             deviceData = {"id" : str(uuid.uuid1()), "deviceId": str(device.deviceid), "data":data, "createdTimestamp" : time.time_ns()}
             print("sending device data",deviceData)
-            writer = DatumWriter(SCHEMA)
-            bytes_writer = io.BytesIO()
-            encoder = avro.io.BinaryEncoder(bytes_writer)
-            writer.write(deviceData, encoder)
-            raw_bytes = bytes_writer.getvalue()
+            # writer = DatumWriter(SCHEMA)
+            # bytes_writer = io.BytesIO()
+            # encoder = avro.io.BinaryEncoder(bytes_writer)
+            # writer.write(deviceData, encoder)
+            # raw_bytes = bytes_writer.getvalue()
             PRODUCER.send(TOPIC, value=deviceData)
     time.sleep(2) #sleep for 2 seconds.
 
