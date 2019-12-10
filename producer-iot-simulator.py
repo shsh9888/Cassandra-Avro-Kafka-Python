@@ -65,5 +65,5 @@ while True:
             # writer.write(deviceData, encoder)
             # raw_bytes = bytes_writer.getvalue()
             PRODUCER.send(TOPIC, value=deviceData)
-    time.sleep(2) #sleep for 2 seconds.
+        time.sleep(1) #sleep for 2 seconds.
 
