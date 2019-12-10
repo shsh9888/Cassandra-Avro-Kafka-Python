@@ -57,7 +57,7 @@ while True:
         for i in range(numberOfEvents):
             data = random.randrange(0,1000)
             data = str(data)
-            deviceData = {"id" : str(uuid.uuid1()), "deviceId": str(device.deviceid), "data":data, "createdTimestamp" : int(time.time_ns())}
+            deviceData = {"id" : str(uuid.uuid1()), "deviceId": str(device.deviceid), "data":data, "createdTimestamp" : time.time_ns()}
             print("sending device data",deviceData)
             writer = DatumWriter(SCHEMA)
             bytes_writer = io.BytesIO()
